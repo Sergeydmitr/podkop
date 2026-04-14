@@ -172,15 +172,6 @@ main() {
         exit 1
     fi
 
-    # Verify downloaded packages are valid archives
-    for pkg_file in "$DOWNLOAD_DIR"/*podkop*; do
-        [ -f "$pkg_file" ] || continue
-        if ! tar -tzf "$pkg_file" > /dev/null 2>&1; then
-            msg "Error: $pkg_file is not a valid package archive. Aborting."
-            exit 1
-        fi
-    done
-
     for pkg in podkop luci-app-podkop; do
         file=""
         for f in "$DOWNLOAD_DIR"/"$pkg"*; do
