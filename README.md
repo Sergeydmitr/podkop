@@ -21,7 +21,7 @@ https://podkop.net/
 
 Вкратце, достаточно одного скрипта для установки и обновления:
 ```
-sh <(wget -O - https://raw.githubusercontent.com/itdoginfo/podkop/refs/heads/main/install.sh)
+sh <(wget -O - https://raw.githubusercontent.com/Sergeydmitr/podkop/refs/heads/main/install.sh)
 ```
 
 ## Изменения 0.7.0
@@ -38,7 +38,7 @@ mv /etc/config/podkop /etc/config/podkop-070
 ```
 2. Стянуть новый дефолтный конфиг:
 ```
-wget -O /etc/config/podkop https://raw.githubusercontent.com/itdoginfo/podkop/refs/heads/main/podkop/files/etc/config/podkop
+wget -O /etc/config/podkop https://raw.githubusercontent.com/Sergeydmitr/podkop/refs/heads/main/podkop/files/etc/config/podkop
 ```
 3. Настроить заново ваш Podkop через Luci или UCI.
 
@@ -48,9 +48,9 @@ wget -O /etc/config/podkop https://raw.githubusercontent.com/itdoginfo/podkop/re
 > PR принимаются только по согласованию с авторами в ТГ-чате. Остальные PR на данный момент не рассматриваются. Не тратьте зря своё время.
 
 ## Будущее
-- [ ] [Подписка](https://github.com/itdoginfo/podkop/issues/118). Здесь нужна реализация, чтоб для каждой секции помимо ручного выбора, был выбор фильтрации по тегу. Например, для main выбираем ключевые слова NL, DE, FI. А для extra секции фильтруем по RU. И создаётся outbound c urltest в которых перечислены outbound из фильтров.
+- [ ] [Подписка](https://github.com/Sergeydmitr/podkop/issues/118). Здесь нужна реализация, чтоб для каждой секции помимо ручного выбора, был выбор фильтрации по тегу. Например, для main выбираем ключевые слова NL, DE, FI. А для extra секции фильтруем по RU. И создаётся outbound c urltest в которых перечислены outbound из фильтров.
 - [ ] Весь трафик в sing-box и маршрутизация полностью на его уровне.
-- [ ] При успешном запуске переходит в фоновый режим и следит за состоянием sing-box. Если вдруг идёт exit 1, выполняется dnsmasq restore и снова следит за состоянием. Вопрос в том, как это искусственно провернуть. Попробовать положить прокси и посмотреть, останется ли работать DNS в этом случае. И здесь, вероятно, можно обойтись триггером в init.d. [Issue](https://github.com/itdoginfo/podkop/issues/111)
+- [ ] При успешном запуске переходит в фоновый режим и следит за состоянием sing-box. Если вдруг идёт exit 1, выполняется dnsmasq restore и снова следит за состоянием. Вопрос в том, как это искусственно провернуть. Попробовать положить прокси и посмотреть, останется ли работать DNS в этом случае. И здесь, вероятно, можно обойтись триггером в init.d. [Issue](https://github.com/Sergeydmitr/podkop/issues/111)
 - [ ] Галочка, которая режет доступ к doh серверам.
 - [ ] IPv6. Только после наполнения Wiki.
 
@@ -58,4 +58,4 @@ wget -O /etc/config/podkop https://raw.githubusercontent.com/itdoginfo/podkop/re
 - [ ] Unit тесты (BATS)
 - [ ] Интеграционные тесты бекенда (OpenWrt rootfs + BATS)
 
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/itdoginfo/podkop)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Sergeydmitr/podkop)
