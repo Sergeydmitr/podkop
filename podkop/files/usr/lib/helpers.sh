@@ -261,15 +261,36 @@ download_to_file() {
     local retries="${4:-3}"
     local wait="${5:-2}"
 
-    for attempt in $(seq 1 "$retries"); do
+    # Validate URL scheme
+    case "$url" in
+        http://*|https://*) ;;
+        *)
+            log "Invalid URL scheme (only http/https allowed): $url" "error"
+            return 1
+            ;;
+    esac
+
+    # Validate proxy address format if provided (must be host:port)
+    if [ -n "$http_proxy_address" ]; then
+        case "$http_proxy_address" in
+            *[!a-zA-Z0-9.:_-]*)
+                log "Invalid proxy address format: $http_proxy_address" "error"
+                return 1
+                ;;
+        esac
+    fi
+
+    local attempt=1
+    while [ "$attempt" -le "$retries" ]; do
         if [ -n "$http_proxy_address" ]; then
-            http_proxy="http://$http_proxy_address" https_proxy="http://$http_proxy_address" wget -O "$filepath" "$url" && break
+            http_proxy="http://$http_proxy_address" https_proxy="http://$http_proxy_address" wget -O "$filepath" -- "$url" && break
         else
-            wget -O "$filepath" "$url" && break
+            wget -O "$filepath" -- "$url" && break
         fi
 
         log "Attempt $attempt/$retries to download $url failed" "warn"
         sleep "$wait"
+        attempt=$((attempt + 1))
     done
 }
 
@@ -298,7 +319,7 @@ parse_domain_or_subnet_string_to_commas_string() {
     local string="$1"
     local type="$2"
 
-    tmpfile=$(mktemp)
+    tmpfile=$(mktemp) || { log "Failed to create temp file" "error"; return 1; }
     printf "%s\n" "$string" | sed 's/\/\/.*//' | tr ', ' '\n' | grep -v '^$' > "$tmpfile"
 
     result="$(parse_domain_or_subnet_file_to_comma_string "$tmpfile" "$type")"

@@ -88,7 +88,20 @@ update_config() {
 
             yes|y|Y)
                 mv /etc/config/podkop /etc/config/podkop-070
-                wget -O /etc/config/podkop https://raw.githubusercontent.com/Sergeydmitr/podkop/refs/heads/main/podkop/files/etc/config/podkop
+                wget -O /tmp/podkop_config_new https://raw.githubusercontent.com/Sergeydmitr/podkop/refs/heads/main/podkop/files/etc/config/podkop
+                if [ ! -s /tmp/podkop_config_new ]; then
+                    msg "Error: downloaded config is empty. Restoring old config."
+                    mv /etc/config/podkop-070 /etc/config/podkop
+                    rm -f /tmp/podkop_config_new
+                    exit 1
+                fi
+                if ! grep -q "config settings" /tmp/podkop_config_new; then
+                    msg "Error: downloaded config does not look like a valid podkop config. Restoring old config."
+                    mv /etc/config/podkop-070 /etc/config/podkop
+                    rm -f /tmp/podkop_config_new
+                    exit 1
+                fi
+                mv /tmp/podkop_config_new /etc/config/podkop
                 msg "Podkop config has been reset to default. Your old config saved in /etc/config/podkop-070"
                 break
                 ;;
@@ -158,6 +171,15 @@ main() {
         msg "No packages were downloaded successfully"
         exit 1
     fi
+
+    # Verify downloaded packages are valid archives
+    for pkg_file in "$DOWNLOAD_DIR"/*podkop*; do
+        [ -f "$pkg_file" ] || continue
+        if ! tar -tzf "$pkg_file" > /dev/null 2>&1; then
+            msg "Error: $pkg_file is not a valid package archive. Aborting."
+            exit 1
+        fi
+    done
 
     for pkg in podkop luci-app-podkop; do
         file=""

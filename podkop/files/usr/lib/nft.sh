@@ -26,6 +26,14 @@ nft_add_set_elements() {
     local set="$2"
     local elements="$3"
 
+    # Validate elements contain only safe characters (IPs, CIDRs, commas, dots, colons, slashes, spaces)
+    case "$elements" in
+        *[!0-9a-fA-F.,:/\ ]*)
+            log "Invalid characters in nft set elements" "error"
+            return 1
+            ;;
+    esac
+
     nft add element inet "$table" "$set" "{ $elements }"
 }
 

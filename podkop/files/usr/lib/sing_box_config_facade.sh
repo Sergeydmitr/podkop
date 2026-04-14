@@ -64,15 +64,36 @@ sing_box_cf_add_proxy_outbound() {
     url=$(url_decode "$url")
     url=$(url_strip_fragment "$url")
 
-    local scheme
+    local scheme host port
     scheme="$(url_get_scheme "$url")"
+    host=$(url_get_host "$url")
+    port=$(url_get_port "$url")
+
+    # Validate host
+    if [ -z "$host" ]; then
+        log "Empty host in proxy URL. Aborted." "fatal"
+        exit 1
+    fi
+
+    # Validate port is numeric if present
+    if [ -n "$port" ]; then
+        case "$port" in
+            *[!0-9]*)
+                log "Invalid port '$port' in proxy URL. Aborted." "fatal"
+                exit 1
+                ;;
+        esac
+        if [ "$port" -lt 1 ] || [ "$port" -gt 65535 ]; then
+            log "Port '$port' out of range (1-65535). Aborted." "fatal"
+            exit 1
+        fi
+    fi
+
     case "$scheme" in
     socks4 | socks4a | socks5)
-        local tag host port version userinfo username password udp_over_tcp
+        local tag version userinfo username password
 
         tag=$(get_outbound_tag_by_section "$section")
-        host=$(url_get_host "$url")
-        port=$(url_get_port "$url")
         version="${scheme#socks}"
         if [ "$scheme" = "socks5" ]; then
             userinfo=$(url_get_userinfo "$url")
@@ -94,10 +115,8 @@ sing_box_cf_add_proxy_outbound() {
         )"
         ;;
     vless)
-        local tag host port uuid flow packet_encoding
+        local tag uuid flow packet_encoding
         tag=$(get_outbound_tag_by_section "$section")
-        host=$(url_get_host "$url")
-        port=$(url_get_port "$url")
         uuid=$(url_get_userinfo "$url")
         flow=$(url_get_query_param "$url" "flow")
         packet_encoding=$(url_get_query_param "$url" "packetEncoding")
@@ -107,7 +126,7 @@ sing_box_cf_add_proxy_outbound() {
         config=$(_add_outbound_transport "$config" "$tag" "$url")
         ;;
     ss)
-        local userinfo tag host port method password udp_over_tcp
+        local userinfo tag method password
 
         userinfo=$(url_get_userinfo "$url")
         if ! is_shadowsocks_userinfo_format "$userinfo"; then
@@ -119,8 +138,6 @@ sing_box_cf_add_proxy_outbound() {
         fi
 
         tag=$(get_outbound_tag_by_section "$section")
-        host=$(url_get_host "$url")
-        port=$(url_get_port "$url")
         method="${userinfo%%:*}"
         password="${userinfo#*:}"
 
@@ -137,10 +154,8 @@ sing_box_cf_add_proxy_outbound() {
         )
         ;;
     trojan)
-        local tag host port password
+        local tag password
         tag=$(get_outbound_tag_by_section "$section")
-        host=$(url_get_host "$url")
-        port=$(url_get_port "$url")
         password=$(url_get_userinfo "$url")
 
         config=$(sing_box_cm_add_trojan_outbound "$config" "$tag" "$host" "$port" "$password")
@@ -148,10 +163,8 @@ sing_box_cf_add_proxy_outbound() {
         config=$(_add_outbound_transport "$config" "$tag" "$url")
         ;;
     hysteria2 | hy2)
-        local tag host port password obfuscator_type obfuscator_password upload_mbps download_mbps
+        local tag password obfuscator_type obfuscator_password upload_mbps download_mbps
         tag=$(get_outbound_tag_by_section "$section")
-        host=$(url_get_host "$url")
-        port="$(url_get_port "$url")"
         password=$(url_get_userinfo "$url")
         obfuscator_type=$(url_get_query_param "$url" "obfs")
         obfuscator_password=$(url_get_query_param "$url" "obfs-password")

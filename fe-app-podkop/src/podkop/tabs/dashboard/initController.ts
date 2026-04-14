@@ -44,15 +44,19 @@ async function connectToClashSockets() {
   socket.subscribe(
     `${getClashWsUrl()}/traffic?token=${clashApiSecret}`,
     (msg) => {
-      const parsedMsg = JSON.parse(msg);
+      try {
+        const parsedMsg = JSON.parse(msg);
 
-      store.set({
-        bandwidthWidget: {
-          loading: false,
-          failed: false,
-          data: { up: parsedMsg.up, down: parsedMsg.down },
-        },
-      });
+        store.set({
+          bandwidthWidget: {
+            loading: false,
+            failed: false,
+            data: { up: parsedMsg.up, down: parsedMsg.down },
+          },
+        });
+      } catch (e) {
+        logger.error('[DASHBOARD]', 'Failed to parse traffic message:', e);
+      }
     },
     (_err) => {
       logger.error(
@@ -73,26 +77,30 @@ async function connectToClashSockets() {
   socket.subscribe(
     `${getClashWsUrl()}/connections?token=${clashApiSecret}`,
     (msg) => {
-      const parsedMsg = JSON.parse(msg);
+      try {
+        const parsedMsg = JSON.parse(msg);
 
-      store.set({
-        trafficTotalWidget: {
-          loading: false,
-          failed: false,
-          data: {
-            downloadTotal: parsedMsg.downloadTotal,
-            uploadTotal: parsedMsg.uploadTotal,
+        store.set({
+          trafficTotalWidget: {
+            loading: false,
+            failed: false,
+            data: {
+              downloadTotal: parsedMsg.downloadTotal,
+              uploadTotal: parsedMsg.uploadTotal,
+            },
           },
-        },
-        systemInfoWidget: {
-          loading: false,
-          failed: false,
-          data: {
-            connections: parsedMsg.connections?.length,
-            memory: parsedMsg.memory,
+          systemInfoWidget: {
+            loading: false,
+            failed: false,
+            data: {
+              connections: parsedMsg.connections?.length,
+              memory: parsedMsg.memory,
+            },
           },
-        },
-      });
+        });
+      } catch (e) {
+        logger.error('[DASHBOARD]', 'Failed to parse connections message:', e);
+      }
     },
     (_err) => {
       logger.error(

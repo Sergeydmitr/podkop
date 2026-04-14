@@ -1,4 +1,4 @@
-FROM itdoginfo/openwrt-sdk-apk:09102025
+FROM itdoginfo/openwrt-sdk-apk:09102025@sha256:5f4b4e55ade11411ed3d122c560d8ed44aed7688cb503cd6a6ba8450e436b6e4
 
 ARG PODKOP_VERSION
 ENV PODKOP_VERSION=${PODKOP_VERSION}
