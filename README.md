@@ -24,29 +24,6 @@ https://podkop.net/
 sh <(wget -O - https://raw.githubusercontent.com/Sergeydmitr/podkop/refs/heads/main/install.sh)
 ```
 
-## Изменения 0.7.0
-Начиная с версии 0.7.0 изменена структура конфига `/etc/config/podkop`. Старые значения несовместимы с новыми. Нужно заново настроить Podkop.
-
-Скрипт установки обнаружит старую версию и предупредит вас об этом. Если вы согласитесь, то он сделает автоматически написанное ниже.
-
-При обновлении вручную нужно:
-
-0. Не ныть в issue и чатик.
-1. Забэкапить старый конфиг:
-```
-mv /etc/config/podkop /etc/config/podkop-070
-```
-2. Стянуть новый дефолтный конфиг:
-```
-wget -O /etc/config/podkop https://raw.githubusercontent.com/Sergeydmitr/podkop/refs/heads/main/podkop/files/etc/config/podkop
-```
-3. Настроить заново ваш Podkop через Luci или UCI.
-
-# ToDo
-
-> [!IMPORTANT]  
-> PR принимаются только по согласованию с авторами в ТГ-чате. Остальные PR на данный момент не рассматриваются. Не тратьте зря своё время.
-
 ## Изменения 0.8.1
 
 ### Безопасность
