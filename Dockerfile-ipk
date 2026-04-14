@@ -1,4 +1,4 @@
-FROM itdoginfo/openwrt-sdk-ipk:24.10.3@sha256:97756946bc33cc46718f08f0c97033ab89de95083044b2a2efcbced42afdd015
+FROM itdoginfo/openwrt-sdk-ipk:24.10.3@sha256:7fc90c7ae663e0912d7ff8d309730562bd7fe248cc8e68f23a55f6de52ee1216
 
 ARG PODKOP_VERSION
 
